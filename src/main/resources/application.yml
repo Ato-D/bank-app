@@ -1,0 +1,57 @@
+server:
+  port: 8060
+
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 465
+    username: donkorderrick31@gmail.com
+    password: okazycvgfjyznaeh
+    protocol: smtp
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
+      mail.smtp.socketFactory.port: 465
+      mail.smtp.socketFactory.class: javax.net.ssl.SSLSocketFactory
+
+#spring:
+#  mail:
+#    host: smtp.gmail.com
+#    username: donkorderrick31@gmail.com
+#    password: okazycvgfjyznaeh
+#    port: 587
+#    protocol: smtp
+#    properties:
+#      mail.transport.protocol: smtp
+#      mail.smtp.auth: true
+#      mail.smtp.starttls.enable: true
+#      mail.smtp.starttls.required: true
+
+
+
+
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: true
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: bank_db
+
+  datasource:
+    url: jdbc:postgresql://localhost:15432/bank_db
+    username: postgres
+    password: 12345
+    hikari:
+      schema: bank_db
+    driver-class-name: org.postgresql.Driver
+
+  application:
+    name: bank-app
+
+
+
