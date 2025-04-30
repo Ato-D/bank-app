@@ -1,6 +1,7 @@
 package com.biggest.bank_app.controller;
 
 import com.biggest.bank_app.dto.BankResponseDTO;
+import com.biggest.bank_app.dto.CreditDebitDTO;
 import com.biggest.bank_app.dto.EnquiryRequestDTO;
 import com.biggest.bank_app.dto.UserRequestDTO;
 import com.biggest.bank_app.service.UserService;
@@ -34,5 +35,10 @@ public class UserController {
         EnquiryRequestDTO enquiryRequestDTO = new EnquiryRequestDTO();
         enquiryRequestDTO.setAccountNumber(accountNumber);
         return userService.nameEnquiry(enquiryRequestDTO);
+    }
+
+    @PostMapping("/credit-account")
+    public BankResponseDTO creditAccount(@RequestBody CreditDebitDTO creditDebitDTO) {
+        return userService.creditAccount(creditDebitDTO);
     }
 }

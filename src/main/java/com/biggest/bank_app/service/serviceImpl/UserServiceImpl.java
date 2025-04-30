@@ -161,4 +161,54 @@ public class UserServiceImpl implements UserService {
         return foundUser.getFirstName() + " " + foundUser.getLastName() + " " + foundUser.getOtherName();
 
     }
+
+    @Override
+    public BankResponseDTO creditAccount(CreditDebitDTO creditDebitDTO) {
+
+        /**
+         * check if the account number exists
+         * if it does, we then deposit
+         */
+
+        boolean isAccountExist = userRepository.existsByAccountNumber(creditDebitDTO.getAccountNumber());
+        if (!isAccountExist) {
+            BankResponseDTO bankResponseDTO = new BankResponseDTO();
+            bankResponseDTO.setResponseCode(AccountUtils.ACCOUNT_NOT_EXIST_CODE);
+            bankResponseDTO.setResponseMessage(AccountUtils.ACCOUNT_NOT_EXIST_MESSAGE);
+            bankResponseDTO.setAccountInfo(null);
+
+            return bankResponseDTO;
+        }
+        else {
+
+            User userToCredit = userRepository.findByAccountNumber(creditDebitDTO.getAccountNumber());
+            userToCredit.setAccountBalance(creditDebitDTO.getAmount().add(userToCredit.getAccountBalance()));
+
+            userRepository.save(userToCredit);
+
+            /**
+             * Send email alert
+             */
+            EmailDetailsDTO emailDetailsDTO = new EmailDetailsDTO();
+            emailDetailsDTO.setRecipient(userToCredit.getEmail());
+            emailDetailsDTO.setSubject("ACCOUNT CREDITED");
+            emailDetailsDTO.setMessageBody("Dear " + userToCredit.getFirstName() + ", An amount of " + creditDebitDTO.getAmount() + " has been credited to your account. Your New Balance: GHS " +
+                    userToCredit.getAccountBalance() + "\nThank You");
+
+            emailService.sendEmailAlert(emailDetailsDTO);
+
+            AccountInfo accountInfo = new AccountInfo();
+            accountInfo.setAccountNumber(creditDebitDTO.getAccountNumber());
+            accountInfo.setAccountName(userToCredit.getFirstName() + " " + userToCredit.getLastName() + " " + userToCredit.getOtherName());
+            accountInfo.setAccountBalance(userToCredit.getAccountBalance());
+
+            BankResponseDTO bankResponseDTO = new BankResponseDTO();
+            bankResponseDTO.setResponseCode(AccountUtils.ACCOUNT_CREDITED_SUCCESS);
+            bankResponseDTO.setResponseMessage(AccountUtils.ACCOUNT_CREDITED_SUCCESS_MESSAGE);
+            bankResponseDTO.setAccountInfo(accountInfo);
+
+            return  bankResponseDTO;
+
+        }
+    }
 }

@@ -35,7 +35,6 @@ public class BankResponseDTO {
         return accountInfo;
     }
 
-    // Setter methods
     public void setResponseCode(String responseCode) {
         this.responseCode = responseCode;
     }
